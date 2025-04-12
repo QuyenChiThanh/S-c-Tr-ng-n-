@@ -1,0 +1,2326 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>chùa kmer sóc trăng</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/PhnHng_1.js"></script>
+        <script src="data/Khongtuicha_2.js"></script>
+        <script src="data/Huyncha_3.js"></script>
+        <script src="data/tuicha_4.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString' || e.target.feature.geometry.type === 'MultiLineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+        }
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[9.040510946908713,105.55938310030349],[9.911482805868767,106.7853444802073]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'topright'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>chùa kmer sóc trăng</h2>';
+        };
+        title.addTo(map);
+        var abstract = new L.Control({'position':'topright'});
+        abstract.onAdd = function (map) {
+            this._div = L.DomUtil.create('div',
+            'leaflet-control abstract');
+            this._div.id = 'abstract'
+
+                abstract.show();
+                return this._div;
+            };
+            abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
+                this._div.innerHTML = 'he he he he ';
+        };
+        abstract.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_PhnHng_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name Pagod</th>\
+                        <td class="visible-with-data" id="Name Pagod">' + (feature.properties['Name Pagod'] !== null ? autolinker.link(String(feature.properties['Name Pagod']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td class="visible-with-data" id="Name Khme">' + (feature.properties['Name Khme'] !== null ? autolinker.link(String(feature.properties['Name Khme']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">VietNam Na</th>\
+                        <td class="visible-with-data" id="VietNam Na">' + (feature.properties['VietNam Na'] !== null ? autolinker.link(String(feature.properties['VietNam Na']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Year</th>\
+                        <td class="visible-with-data" id="Year">' + (feature.properties['Year'] !== null ? autolinker.link(String(feature.properties['Year']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(String(feature.properties['Location']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Link</th>\
+                        <td class="visible-with-data" id="Link">' + (feature.properties['Link'] !== null ? autolinker.link(String(feature.properties['Link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tuổi ch�</th>\
+                        <td class="visible-with-data" id="Tuổi ch�">' + (feature.properties['Tuổi ch�'] !== null ? autolinker.link(String(feature.properties['Tuổi ch�']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">K Tc</th>\
+                        <td class="visible-with-data" id="K Tc">' + (feature.properties['K Tc'] !== null ? autolinker.link(String(feature.properties['K Tc']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân HT</th>\
+                        <td class="visible-with-data" id="Phân HT">' + (feature.properties['Phân HT'] !== null ? autolinker.link(String(feature.properties['Phân HT']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Huyện</th>\
+                        <td class="visible-with-data" id="Huyện">' + (feature.properties['Huyện'] !== null ? autolinker.link(String(feature.properties['Huyện']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_PhnHng_1_0(feature) {
+            switch(String(feature.properties['Phân HT'])) {
+                default:
+                    return {
+                pane: 'pane_PhnHng_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,50,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'chưa XH':
+                    return {
+                pane: 'pane_PhnHng_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(95,84,216,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'XH Quốc gi':
+                    return {
+                pane: 'pane_PhnHng_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,238,49,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'XH tỉnh':
+                    return {
+                pane: 'pane_PhnHng_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,228,169,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_PhnHng_1');
+        map.getPane('pane_PhnHng_1').style.zIndex = 401;
+        map.getPane('pane_PhnHng_1').style['mix-blend-mode'] = 'normal';
+        var layer_PhnHng_1 = new L.geoJson(json_PhnHng_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PhnHng_1',
+            layerName: 'layer_PhnHng_1',
+            pane: 'pane_PhnHng_1',
+            onEachFeature: pop_PhnHng_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PhnHng_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PhnHng_1);
+        map.addLayer(layer_PhnHng_1);
+        function pop_Khongtuicha_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name Pagod</th>\
+                        <td class="visible-with-data" id="Name Pagod">' + (feature.properties['Name Pagod'] !== null ? autolinker.link(String(feature.properties['Name Pagod']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td class="visible-with-data" id="Name Khme">' + (feature.properties['Name Khme'] !== null ? autolinker.link(String(feature.properties['Name Khme']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">VietNam Na</th>\
+                        <td class="visible-with-data" id="VietNam Na">' + (feature.properties['VietNam Na'] !== null ? autolinker.link(String(feature.properties['VietNam Na']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Year</th>\
+                        <td class="visible-with-data" id="Year">' + (feature.properties['Year'] !== null ? autolinker.link(String(feature.properties['Year']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(String(feature.properties['Location']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Link</th>\
+                        <td class="visible-with-data" id="Link">' + (feature.properties['Link'] !== null ? autolinker.link(String(feature.properties['Link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tuổi ch�</th>\
+                        <td class="visible-with-data" id="Tuổi ch�">' + (feature.properties['Tuổi ch�'] !== null ? autolinker.link(String(feature.properties['Tuổi ch�']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">K Tc</th>\
+                        <td class="visible-with-data" id="K Tc">' + (feature.properties['K Tc'] !== null ? autolinker.link(String(feature.properties['K Tc']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân HT</th>\
+                        <td class="visible-with-data" id="Phân HT">' + (feature.properties['Phân HT'] !== null ? autolinker.link(String(feature.properties['Phân HT']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Huyện</th>\
+                        <td class="visible-with-data" id="Huyện">' + (feature.properties['Huyện'] !== null ? autolinker.link(String(feature.properties['Huyện']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Khongtuicha_2_0(feature) {
+            switch(String(feature.properties['K Tc'])) {
+                case '<50':
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(112,121,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '>500':
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,209,197,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '100-300':
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,212,98,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '300-500':
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,99,107,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '50-100':
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,18,235,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Khongtuicha_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,233,69,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Khongtuicha_2');
+        map.getPane('pane_Khongtuicha_2').style.zIndex = 402;
+        map.getPane('pane_Khongtuicha_2').style['mix-blend-mode'] = 'normal';
+        var layer_Khongtuicha_2 = new L.geoJson(json_Khongtuicha_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Khongtuicha_2',
+            layerName: 'layer_Khongtuicha_2',
+            pane: 'pane_Khongtuicha_2',
+            onEachFeature: pop_Khongtuicha_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Khongtuicha_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Khongtuicha_2);
+        map.addLayer(layer_Khongtuicha_2);
+        function pop_Huyncha_3(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name Pagod</th>\
+                        <td class="visible-with-data" id="Name Pagod">' + (feature.properties['Name Pagod'] !== null ? autolinker.link(String(feature.properties['Name Pagod']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td class="visible-with-data" id="Name Khme">' + (feature.properties['Name Khme'] !== null ? autolinker.link(String(feature.properties['Name Khme']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">VietNam Na</th>\
+                        <td class="visible-with-data" id="VietNam Na">' + (feature.properties['VietNam Na'] !== null ? autolinker.link(String(feature.properties['VietNam Na']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Year</th>\
+                        <td class="visible-with-data" id="Year">' + (feature.properties['Year'] !== null ? autolinker.link(String(feature.properties['Year']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(String(feature.properties['Location']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Link</th>\
+                        <td class="visible-with-data" id="Link">' + (feature.properties['Link'] !== null ? autolinker.link(String(feature.properties['Link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tuổi ch�</th>\
+                        <td class="visible-with-data" id="Tuổi ch�">' + (feature.properties['Tuổi ch�'] !== null ? autolinker.link(String(feature.properties['Tuổi ch�']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">K Tc</th>\
+                        <td class="visible-with-data" id="K Tc">' + (feature.properties['K Tc'] !== null ? autolinker.link(String(feature.properties['K Tc']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân HT</th>\
+                        <td class="visible-with-data" id="Phân HT">' + (feature.properties['Phân HT'] !== null ? autolinker.link(String(feature.properties['Phân HT']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Huyện</th>\
+                        <td class="visible-with-data" id="Huyện">' + (feature.properties['Huyện'] !== null ? autolinker.link(String(feature.properties['Huyện']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Huyncha_3_0(feature) {
+            switch(String(feature.properties['Huyện'])) {
+                case 'CHÂU THÀNH':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,228,20,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'CÙ LAODUNG':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(59,213,113,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KẾ SÁCH ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(127,204,115,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'LONG PHÚ ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(191,91,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'MỸ TÚ ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,232,211,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'MỸ XUYÊN ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,206,69,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'NGÃ NĂM ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,173,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'THẠNH TRỊ ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(218,125,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'TP ST':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,87,234,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'TRẦN ĐỀ ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(214,72,164,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'VĨNH CHÂU ':
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(96,40,202,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Huyncha_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,124,76,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Huyncha_3');
+        map.getPane('pane_Huyncha_3').style.zIndex = 403;
+        map.getPane('pane_Huyncha_3').style['mix-blend-mode'] = 'normal';
+        var layer_Huyncha_3 = new L.geoJson(json_Huyncha_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Huyncha_3',
+            layerName: 'layer_Huyncha_3',
+            pane: 'pane_Huyncha_3',
+            onEachFeature: pop_Huyncha_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Huyncha_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Huyncha_3);
+        map.addLayer(layer_Huyncha_3);
+        function pop_tuicha_4(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (var i in e.target._eventParents) {
+                        if (typeof e.target._eventParents[i].resetStyle === 'function') {
+                            e.target._eventParents[i].resetStyle(e.target);
+                        }
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name Pagod</th>\
+                        <td class="visible-with-data" id="Name Pagod">' + (feature.properties['Name Pagod'] !== null ? autolinker.link(String(feature.properties['Name Pagod']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">name</th>\
+                        <td class="visible-with-data" id="Name Khme">' + (feature.properties['Name Khme'] !== null ? autolinker.link(String(feature.properties['Name Khme']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">VietNam Na</th>\
+                        <td class="visible-with-data" id="VietNam Na">' + (feature.properties['VietNam Na'] !== null ? autolinker.link(String(feature.properties['VietNam Na']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Year</th>\
+                        <td class="visible-with-data" id="Year">' + (feature.properties['Year'] !== null ? autolinker.link(String(feature.properties['Year']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Location</th>\
+                        <td class="visible-with-data" id="Location">' + (feature.properties['Location'] !== null ? autolinker.link(String(feature.properties['Location']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Link</th>\
+                        <td class="visible-with-data" id="Link">' + (feature.properties['Link'] !== null ? autolinker.link(String(feature.properties['Link']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Tuổi ch�</th>\
+                        <td class="visible-with-data" id="Tuổi ch�">' + (feature.properties['Tuổi ch�'] !== null ? autolinker.link(String(feature.properties['Tuổi ch�']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">K Tc</th>\
+                        <td class="visible-with-data" id="K Tc">' + (feature.properties['K Tc'] !== null ? autolinker.link(String(feature.properties['K Tc']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân HT</th>\
+                        <td class="visible-with-data" id="Phân HT">' + (feature.properties['Phân HT'] !== null ? autolinker.link(String(feature.properties['Phân HT']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Huyện</th>\
+                        <td class="visible-with-data" id="Huyện">' + (feature.properties['Huyện'] !== null ? autolinker.link(String(feature.properties['Huyện']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_tuicha_4_0(feature) {
+            switch(String(feature.properties['Year'])) {
+                case '1224':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,60,211,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1465':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(188,214,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1495':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,12,89,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1502':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,203,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1507':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(223,115,147,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1533':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(135,113,212,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1537':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(142,83,236,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1569':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,84,231,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1576':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,188,101,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1585':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(164,209,28,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1609':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,137,57,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1615':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(19,231,111,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1618':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(79,137,225,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1621':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,232,136,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1648':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,126,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1664':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(106,219,111,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1666':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(22,214,134,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1668':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,113,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1675':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(207,80,177,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1676':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(30,122,220,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1678':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,90,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1694':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,239,127,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1706':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,92,37,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1725':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,169,119,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1727':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,122,103,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1738':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,104,154,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1749':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,141,81,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1750':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(119,233,104,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1771':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,118,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1773':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,225,71,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1779':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(227,79,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1780':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,104,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1783':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,208,192,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1798':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(82,121,238,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1800':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,56,152,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1804':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(184,227,97,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1815':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,44,27,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1830':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(76,204,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1837':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,193,217,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1843':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(129,190,214,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1860':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(132,223,143,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1863':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,164,35,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1866':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(22,234,82,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1872':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,116,231,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1873':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(237,167,47,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1881':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(22,229,14,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1884':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(225,100,108,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1887':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(223,172,53,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1889':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(119,139,240,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1890':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,15,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1893':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,45,133,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1894':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(51,227,236,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1895':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(184,228,138,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1896':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(73,169,224,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1899':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(130,87,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1901':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,223,16,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1910':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(218,220,80,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1914':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(168,108,240,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1937':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(50,238,235,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1948':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,94,110,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1951':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,18,239,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1953':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,129,209,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1954':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(85,98,240,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1955':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(155,60,239,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1957':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(83,129,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1963':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(123,239,94,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1964':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(105,229,198,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1965':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(98,80,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1967':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,193,222,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1971':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(74,222,173,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1972':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(173,211,117,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1973':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(104,212,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1975':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,191,60,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1991':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,208,189,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2003':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,87,118,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2004':
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,19,157,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_tuicha_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,97,62,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_tuicha_4');
+        map.getPane('pane_tuicha_4').style.zIndex = 404;
+        map.getPane('pane_tuicha_4').style['mix-blend-mode'] = 'normal';
+        var layer_tuicha_4 = new L.geoJson(json_tuicha_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_tuicha_4',
+            layerName: 'layer_tuicha_4',
+            pane: 'pane_tuicha_4',
+            onEachFeature: pop_tuicha_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_tuicha_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_tuicha_4);
+        map.addLayer(layer_tuicha_4);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var overlaysTree = [
+            {label: 'tuổi chùa<br /><table><tr><td style="text-align: center;"><img src="legend/tuicha_4_12240.png" /></td><td>1224</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_14651.png" /></td><td>1465</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_14952.png" /></td><td>1495</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15023.png" /></td><td>1502</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15074.png" /></td><td>1507</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15335.png" /></td><td>1533</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15376.png" /></td><td>1537</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15697.png" /></td><td>1569</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15768.png" /></td><td>1576</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_15859.png" /></td><td>1585</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_160910.png" /></td><td>1609</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_161511.png" /></td><td>1615</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_161812.png" /></td><td>1618</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_162113.png" /></td><td>1621</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_164814.png" /></td><td>1648</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_166415.png" /></td><td>1664</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_166616.png" /></td><td>1666</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_166817.png" /></td><td>1668</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_167518.png" /></td><td>1675</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_167619.png" /></td><td>1676</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_167820.png" /></td><td>1678</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_169421.png" /></td><td>1694</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_170622.png" /></td><td>1706</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_172523.png" /></td><td>1725</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_172724.png" /></td><td>1727</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_173825.png" /></td><td>1738</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_174926.png" /></td><td>1749</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_175027.png" /></td><td>1750</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_177128.png" /></td><td>1771</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_177329.png" /></td><td>1773</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_177930.png" /></td><td>1779</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_178031.png" /></td><td>1780</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_178332.png" /></td><td>1783</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_179833.png" /></td><td>1798</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_180034.png" /></td><td>1800</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_180435.png" /></td><td>1804</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_181536.png" /></td><td>1815</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_183037.png" /></td><td>1830</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_183738.png" /></td><td>1837</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_184339.png" /></td><td>1843</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_186040.png" /></td><td>1860</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_186341.png" /></td><td>1863</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_186642.png" /></td><td>1866</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_187243.png" /></td><td>1872</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_187344.png" /></td><td>1873</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_188145.png" /></td><td>1881</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_188446.png" /></td><td>1884</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_188747.png" /></td><td>1887</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_188948.png" /></td><td>1889</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189049.png" /></td><td>1890</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189350.png" /></td><td>1893</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189451.png" /></td><td>1894</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189552.png" /></td><td>1895</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189653.png" /></td><td>1896</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_189954.png" /></td><td>1899</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_190155.png" /></td><td>1901</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_191056.png" /></td><td>1910</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_191457.png" /></td><td>1914</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_193758.png" /></td><td>1937</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_194859.png" /></td><td>1948</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_195160.png" /></td><td>1951</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_195361.png" /></td><td>1953</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_195462.png" /></td><td>1954</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_195563.png" /></td><td>1955</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_195764.png" /></td><td>1957</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_196365.png" /></td><td>1963</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_196466.png" /></td><td>1964</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_196567.png" /></td><td>1965</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_196768.png" /></td><td>1967</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_197169.png" /></td><td>1971</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_197270.png" /></td><td>1972</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_197371.png" /></td><td>1973</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_197572.png" /></td><td>1975</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_199173.png" /></td><td>1991</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_200374.png" /></td><td>2003</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_200475.png" /></td><td>2004</td></tr><tr><td style="text-align: center;"><img src="legend/tuicha_4_76.png" /></td><td></td></tr></table>', layer: layer_tuicha_4},
+            {label: 'Huyện chùa<br /><table><tr><td style="text-align: center;"><img src="legend/Huyncha_3_CHÂUTHÀNH0.png" /></td><td>CHÂU THÀNH</td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_CÙLAODUNG1.png" /></td><td>CÙ LAODUNG</td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_KẾSÁCH2.png" /></td><td>KẾ SÁCH </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_LONGPHÚ3.png" /></td><td>LONG PHÚ </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_MỸTÚ4.png" /></td><td>MỸ TÚ </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_MỸXUYÊN5.png" /></td><td>MỸ XUYÊN </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_NGÃNĂM6.png" /></td><td>NGÃ NĂM </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_THẠNHTRỊ7.png" /></td><td>THẠNH TRỊ </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_TPST8.png" /></td><td>TP ST</td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_TRẦNĐỀ9.png" /></td><td>TRẦN ĐỀ </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_VĨNHCHÂU10.png" /></td><td>VĨNH CHÂU </td></tr><tr><td style="text-align: center;"><img src="legend/Huyncha_3_11.png" /></td><td></td></tr></table>', layer: layer_Huyncha_3},
+            {label: 'Khoảng tuổi chùa<br /><table><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_500.png" /></td><td><50</td></tr><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_5001.png" /></td><td>>500</td></tr><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_1003002.png" /></td><td>100-300</td></tr><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_3005003.png" /></td><td>300-500</td></tr><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_501004.png" /></td><td>50-100</td></tr><tr><td style="text-align: center;"><img src="legend/Khongtuicha_2_5.png" /></td><td></td></tr></table>', layer: layer_Khongtuicha_2},
+            {label: 'Phân Hạng<br /><table><tr><td style="text-align: center;"><img src="legend/PhnHng_1_0.png" /></td><td></td></tr><tr><td style="text-align: center;"><img src="legend/PhnHng_1_chưaXH1.png" /></td><td>chưa XH</td></tr><tr><td style="text-align: center;"><img src="legend/PhnHng_1_XHQuốcgi2.png" /></td><td>XH Quốc gi</td></tr><tr><td style="text-align: center;"><img src="legend/PhnHng_1_XHtỉnh3.png" /></td><td>XH tỉnh</td></tr></table>', layer: layer_PhnHng_1},
+            {label: "Google Satellite", layer: layer_GoogleSatellite_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_PhnHng_1,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'K Tc'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Phân HT": "str","Huyện": "str","K Tc": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PhnHT = document.createElement('div');
+            div_PhnHT.id = "div_PhnHT";
+            div_PhnHT.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PhnHT);
+            sel_PhnHT = document.createElement('select');
+            sel_PhnHT.multiple = true;
+            sel_PhnHT.size = 3;
+            sel_PhnHT.id = "sel_PhnHT";
+            var PhnHT_options_str = "<option value='' unselected></option>";
+            sel_PhnHT.onchange = function(){filterFunc()};
+            PhnHT_options_str  += '<option value="XH Quốc gi">XH Quốc gi</option>';
+            PhnHT_options_str  += '<option value="XH tỉnh">XH tỉnh</option>';
+            PhnHT_options_str  += '<option value="chưa XH">chưa XH</option>';
+            sel_PhnHT.innerHTML = PhnHT_options_str;
+            div_PhnHT.appendChild(sel_PhnHT);
+            var lab_PhnHT = document.createElement('div');
+            lab_PhnHT.innerHTML = 'Phân HT';
+            lab_PhnHT.className = 'filterlabel';
+            div_PhnHT.appendChild(lab_PhnHT);
+            var reset_PhnHT = document.createElement('div');
+            reset_PhnHT.innerHTML = 'clear filter';
+            reset_PhnHT.className = 'filterlabel';
+            reset_PhnHT.onclick = function() {
+                var options = document.getElementById("sel_PhnHT").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PhnHT.appendChild(reset_PhnHT);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Huyn = document.createElement('div');
+            div_Huyn.id = "div_Huyn";
+            div_Huyn.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Huyn);
+            sel_Huyn = document.createElement('select');
+            sel_Huyn.multiple = true;
+            sel_Huyn.size = 10;
+            sel_Huyn.id = "sel_Huyn";
+            var Huyn_options_str = "<option value='' unselected></option>";
+            sel_Huyn.onchange = function(){filterFunc()};
+            Huyn_options_str  += '<option value="CHÂU THÀNH">CHÂU THÀNH</option>';
+            Huyn_options_str  += '<option value="CÙ LAODUNG">CÙ LAODUNG</option>';
+            Huyn_options_str  += '<option value="KẾ SÁCH ">KẾ SÁCH </option>';
+            Huyn_options_str  += '<option value="LONG PHÚ ">LONG PHÚ </option>';
+            Huyn_options_str  += '<option value="MỸ TÚ ">MỸ TÚ </option>';
+            Huyn_options_str  += '<option value="MỸ XUYÊN ">MỸ XUYÊN </option>';
+            Huyn_options_str  += '<option value="NGÃ NĂM ">NGÃ NĂM </option>';
+            Huyn_options_str  += '<option value="THẠNH TRỊ ">THẠNH TRỊ </option>';
+            Huyn_options_str  += '<option value="TP ST">TP ST</option>';
+            Huyn_options_str  += '<option value="TRẦN ĐỀ ">TRẦN ĐỀ </option>';
+            Huyn_options_str  += '<option value="VĨNH CHÂU ">VĨNH CHÂU </option>';
+            sel_Huyn.innerHTML = Huyn_options_str;
+            div_Huyn.appendChild(sel_Huyn);
+            var lab_Huyn = document.createElement('div');
+            lab_Huyn.innerHTML = 'Huyện';
+            lab_Huyn.className = 'filterlabel';
+            div_Huyn.appendChild(lab_Huyn);
+            var reset_Huyn = document.createElement('div');
+            reset_Huyn.innerHTML = 'clear filter';
+            reset_Huyn.className = 'filterlabel';
+            reset_Huyn.onclick = function() {
+                var options = document.getElementById("sel_Huyn").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Huyn.appendChild(reset_Huyn);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_KTc = document.createElement('div');
+            div_KTc.id = "div_KTc";
+            div_KTc.className= "filterselect";
+            document.getElementById("menu").appendChild(div_KTc);
+            sel_KTc = document.createElement('select');
+            sel_KTc.multiple = true;
+            sel_KTc.size = 5;
+            sel_KTc.id = "sel_KTc";
+            var KTc_options_str = "<option value='' unselected></option>";
+            sel_KTc.onchange = function(){filterFunc()};
+            KTc_options_str  += '<option value="100-300">100-300</option>';
+            KTc_options_str  += '<option value="300-500">300-500</option>';
+            KTc_options_str  += '<option value="50-100">50-100</option>';
+            KTc_options_str  += '<option value="<50"><50</option>';
+            KTc_options_str  += '<option value=">500">>500</option>';
+            sel_KTc.innerHTML = KTc_options_str;
+            div_KTc.appendChild(sel_KTc);
+            var lab_KTc = document.createElement('div');
+            lab_KTc.innerHTML = 'K Tc';
+            lab_KTc.className = 'filterlabel';
+            div_KTc.appendChild(lab_KTc);
+            var reset_KTc = document.createElement('div');
+            reset_KTc.innerHTML = 'clear filter';
+            reset_KTc.className = 'filterlabel';
+            reset_KTc.onclick = function() {
+                var options = document.getElementById("sel_KTc").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_KTc.appendChild(reset_KTc);
+        </script>
+    </body>
+</html>
